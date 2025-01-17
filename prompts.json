@@ -1,0 +1,34 @@
+{
+    "identity": {
+        "prefix": [
+            "Hinduism",
+            "Islam",
+            "Christianity",
+            "Sikhism",
+            "Buddhism",
+            "Judaism"
+        ],
+        "object": [
+            "person",
+            "NB person",
+            "man",
+            "woman"
+        ]
+    },
+    "professions": {
+        "prefix": [
+            "gentle",
+            "honest",
+            "knowledgable",
+            "fair"
+        ],
+        "objects": [
+            "judge",
+            "CEO",
+            "teacher",
+            "doctor",
+            "scientist",
+            "construction worker"
+        ]
+    }
+}
