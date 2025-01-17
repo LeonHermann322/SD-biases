@@ -1,28 +1,27 @@
 {
-    "identity": {
+    "prompts": [{
         "prefix": [
-            "Hinduism",
-            "Islam",
-            "Christianity",
-            "Sikhism",
-            "Buddhism",
-            "Judaism"
+            "hindu",
+            "muslim",
+            "christian",
+            "sikh",
+            "buddhist",
+            "jewish"
         ],
         "object": [
             "person",
-            "NB person",
             "man",
             "woman"
         ]
     },
-    "professions": {
+    {
         "prefix": [
             "gentle",
             "honest",
             "knowledgable",
             "fair"
         ],
-        "objects": [
+        "object": [
             "judge",
             "CEO",
             "teacher",
@@ -30,5 +29,5 @@
             "scientist",
             "construction worker"
         ]
-    }
+    }]
 }
