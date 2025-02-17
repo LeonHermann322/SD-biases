@@ -13,7 +13,8 @@
       "non-binary person",
       "man",
       "woman"
-    ]
+    ],
+    "images_per_prompt": 4
   },
   "professions": {
     "prefix": [
@@ -170,6 +171,7 @@
       "welder",
       "wholesale buyer",
       "writer"
-    ]
+    ],
+    "images_per_prompt": 1
   }
 }
