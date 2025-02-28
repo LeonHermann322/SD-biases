@@ -54,6 +54,46 @@ def filter_data(
     return filtered_data
 
 
+def visualize_key_comparisons(
+    embeddings: list[EmbeddingDataClass], religion: str, keys: list[str], key_title: str
+):
+    all_embeddings = np.stack(
+        [embedding.reduced_dim_embedding for embedding in embeddings]
+    )
+    x_min, x_max = all_embeddings[:, 0].min(), all_embeddings[:, 0].max()
+    y_min, y_max = all_embeddings[:, 1].min(), all_embeddings[:, 1].max()
+
+    religion_embeddings = filter_data(embeddings, {"prefix": [religion]})
+    comparison_embeddings = filter_data(
+        embeddings,
+        {"setting": keys, "object": keys, "prefix": keys},
+        logical_op="OR",
+    )
+    religion_len = len(religion_embeddings)
+    comparison_len = len(comparison_embeddings)
+
+    stacked_rel_embeddings = np.stack(
+        [embedding.reduced_dim_embedding for embedding in religion_embeddings]
+    )
+    stacked_comp_embeddings = np.stack(
+        [embedding.reduced_dim_embedding for embedding in comparison_embeddings]
+    )
+    stacked_total = np.vstack((stacked_rel_embeddings, stacked_comp_embeddings))
+
+    colors = ["b"] * religion_len + ["r"] * comparison_len
+
+    plt.figure(figsize=(10, 10))
+    plt.scatter(
+        stacked_total[:, 0], stacked_total[:, 1], c=colors, edgecolors="k", alpha=0.7
+    )
+    plt.xlim(x_min, x_max)
+    plt.ylim(y_min, y_max)
+    plt.title(f"{religion} vs. {key_title}")
+    plt.legend([religion, key_title])
+    plt.savefig(f"evaluation/{religion}_vs_{key_title}.png")
+    plt.close()
+
+
 def visualize_keys_w_clusters(embeddings: list[EmbeddingDataClass], keys: list[str]):
     # Define a consistent color palette
     def get_color_map(unique_clusters):
@@ -102,6 +142,65 @@ def visualize_keys_w_clusters(embeddings: list[EmbeddingDataClass], keys: list[s
 
     for key in keys:
         visualize(key)
+
+
+def analyze_cluster(cluster: float, cluster_proportions: dict[str, float]):
+    religions = [
+        "hindu",
+        "muslim",
+        "christian",
+        "sikh",
+        "buddhist",
+        "jewish",
+    ]
+    religion_proportions = {
+        key: value for key, value in cluster_proportions.items() if key in religions
+    }
+    other_proportions = {
+        key: value for key, value in cluster_proportions.items() if key not in religions
+    }
+
+    # Print out relevant information
+    print(f"\nCluster {cluster} proportions:")
+
+    print("Religion proportions:")
+    for key, value in religion_proportions.items():
+        print(f"{key}: {value:.2f}")
+    print("\nOther proportions:")
+    for key, value in other_proportions.items():
+        print(f"{key}: {value:.2f}")
+
+
+def visualize_all_keys_w_clusters(embeddings: list[EmbeddingDataClass]):
+    keys = get_all_keys()
+
+    # Compute global min/max values for fixed scale
+    all_embeddings = np.stack(
+        [embedding.reduced_dim_embedding for embedding in embeddings]
+    )
+    x_min, x_max = all_embeddings[:, 0].min(), all_embeddings[:, 0].max()
+    y_min, y_max = all_embeddings[:, 1].min(), all_embeddings[:, 1].max()
+
+    def visualize():
+        out_folder = f"evaluation/clusters"
+        if not os.path.exists(out_folder):
+            os.makedirs(out_folder)
+
+        plt.figure(figsize=(10, 10))
+        plt.scatter(
+            all_embeddings[:, 0],
+            all_embeddings[:, 1],
+            c=[embedding.cluster for embedding in embeddings],
+            edgecolors="k",
+            alpha=0.7,
+        )
+        plt.xlim(x_min, x_max)
+        plt.ylim(y_min, y_max)
+        plt.title("All embeddings")
+        plt.savefig(f"{out_folder}/all.png")
+        plt.close()
+
+    visualize()
 
 
 def get_all_keys():
